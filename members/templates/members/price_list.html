@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ರೈತರ ಧ್ವನಿ</title>
+    <link rel="icon" type="image/x-icon" href="/static/farmer2.png" width="100" height="120">
+<!-- Add these scripts in the <head> section of your HTML file -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.3/jspdf.umd.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 300;
+            line-height: 1.42em;
+            color: black;
+            background-color: white;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2em;
+            font-weight: 300;
+            line-height: 1em;
+            text-align: center;
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        table.container {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table.container th {
+            background-color: #2289ef;
+            color: white;
+            font-weight: bold;
+            text-align: left;
+            padding: 10px;
+        }
+
+        table.container td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table.container tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .button-column {
+            width: 50px;
+        }
+
+        .button-column button {
+            background-color: #2289ef;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .button-column button:hover {
+            background-color: #45a049;
+        }
+
+        @media (max-width: 600px) {
+            table.container {
+                font-size: 14px;
+            }
+
+            table.container th,
+            table.container td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>ಬೆಲೆ ವಿಚಾರಿಸು</h1>
+
+    <table class="container">
+        <thead>
+            <tr>
+                <th>ಬೆಳೆ</th>
+                <th>ಮಾದರಿ ಬೆಲೆ</th>
+                <th class="button-column"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for crop_price in crop_prices %}
+            <tr>
+                <td>{{ crop_price.crop_name }}</td>
+                <td>{{ crop_price.modal_price }}</td>
+                <td class="button-column"><button class="translate-button" data-crop="{{ crop_price.crop_name }}" data-price="{{ crop_price.modal_price }}">ಅನುವಾದ</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script> 
+       
+
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var sendDataButtons = document.querySelectorAll('.translate-button');
+            sendDataButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var cropName = this.getAttribute('data-crop');
+                    var modalPrice = this.getAttribute('data-price');
+
+                    // Send data to backend using AJAX
+                    var formData = new FormData();
+                    formData.append('crop_name', cropName);
+                    formData.append('modal_price', modalPrice);
+
+                    fetch('/handle_table_data/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        // Handle response from the backend if needed
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
