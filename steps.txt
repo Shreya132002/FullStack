@@ -1,0 +1,12 @@
+1. Install the required Python packages:using command     pip install -r requirements.txt        or   install separetly all the packages named in requirements.txt 
+
+2. Download the spaCy model: python -m spacy download en_core_web_sm
+
+3. In your command prompt Navigate to the crop_price folder of this project where you can see manage.py file
+
+4. In your command prompt run the command     python manage.py runserver
+
+5. Visit the indicate local host address to get the webpage
+
+
+
